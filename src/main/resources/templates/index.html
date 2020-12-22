@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" >
+<head>
+    <meta charset="UTF-8">
+    <title>Students</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        function GetAdd(){
+            var x = document.getElementById("name").value;
+            var y = document.getElementById("email").value;
+            var z = document.getElementById("supervisorChoise").value;
+            var v = document.getElementById(document.getElementById("supervisorChoise").value).innerText;
+            addStudent(x, y, z, v);
+        }
+
+        function Update(studid){
+            var x = document.getElementById("name"+studid).value;
+            var y = document.getElementById("email"+studid).value;
+            var z = document.getElementById("supervisorChoiser").value;
+            var v = document.getElementById(document.getElementById("supervisorChoiser").value).innerText;
+            updatestudent(studid, x, y, z, v)
+        }
+
+        function loadAddF(){
+            var addInfo = $('#addStudents');
+            addInfo.append('<tr>');
+            addInfo.append('Name: <input type="text" id="name"/>' );
+            addInfo.append('Email: <input type="text" id="email"/>');
+            addInfo.append('Supervisor:  <select id="supervisorChoise"> <option id="1" value="1">Supervisor Julius</option> <option id="2" value="2">Supervisor Jon  </option><option id="3" value="3">Supervisor Claus</option></select>'  );
+            addInfo.append('<input type="button" value="Add Student" onclick="GetAdd()"/></tr>');
+            addInfo.append('</tr>');
+            addInfo.append('<br>')
+            addInfo.append('<br>')
+        }
+
+        function loadData(student){
+            var students = $('#listofstudents');
+            students.append('<tr>');
+            students.append('ID: <th hidden>' + student.id + ' </th>' );
+            students.append('Name: <input type="text" value="' +student.name+'" id=\"name' +student.id+'"/>' );
+            students.append('Email: <input type="text" value="' +student.email+'" id=\"email' + student.id + '"/> ');
+            students.append('Current Supervisor: ' +  student.supervisor.name +' | ');
+            students.append('Choose Supervisor:  <select id="supervisorChoiser"> <option id="1" value="1">Supervisor Julius</option> <option id="2" value="2">Supervisor Jon  </option><option id="3" value="3">Supervisor Claus</option></select>' );
+            students.append('<input type="button" value="Update" onclick="Update(\'' + student.id + '\')"/></tr>');
+            students.append('<input type="button" value="Delete" onclick="deletestudent(\'' + student.id + '\')"/></tr>');
+        }
+
+        $.ajax({
+            url: "/students",
+            type: 'GET',
+            dataType: 'JSON', // added data type
+            success: function(data) {
+                $('#addStudents').html("");
+                loadAddF();
+                $('#listofstudents').html("");
+                $.each(data, function(i, student) {
+                    loadData(student);
+                });
+            }
+        });
+
+
+
+        function deletestudent(id){
+            $.ajax({
+                url: "/delete/" + id,
+                type: 'DELETE',
+                dataType: 'JSON',
+                success: function(data){
+                    $('#addStudents').html("");
+                    loadAddF();
+                    // Clearer siden og opdaterer
+                    $('#listofstudents').html("");
+                    $.each(data, function(i, student) {
+                        loadData(student);
+                    });
+                }
+            });
+        }
+        function updatestudent(id, name, email, supervisorid, sname){
+            $.ajax({
+                url: "/update/" + id,
+                type: 'PUT',
+                contentType: 'application/json',
+                data: JSON.stringify({id: id, name: name, email: email, supervisor: {id: supervisorid, name: sname}}),
+                success: function(data){
+                    $('#addStudents').html("");
+                    loadAddF();
+                    // Clearer siden og opdaterer
+                    $('#listofstudents').html("");
+                    $.each(data, function(i, student) {
+                        loadData(student);
+                    });
+                }
+            });
+        }
+
+
+        //add student
+        function addStudent(name, email, supervisorid, sname){
+            $.ajax({
+                url: "/add/student",
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({name: name, email: email, supervisor: {id: supervisorid, name: sname}}),
+                success: function(data) {
+                    $('#addStudents').html("");
+                    loadAddF();
+                    $('#listofstudents').html("");
+                    $.each(data, function(i, student) {
+                        loadData(student);
+                    });
+                }
+            });
+        }
+
+
+    </script>
+
+</head>
+
+<body>
+<div id="addStudents"></div>
+<table id="listofstudents">
+
+</table>
+
+
+</body>
+</html>
+
