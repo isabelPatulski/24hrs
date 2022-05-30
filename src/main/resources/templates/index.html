@@ -14,12 +14,12 @@
             addStudent(x, y, z, v);
         }
 
-        function Update(studid){
-            var x = document.getElementById("name"+studid).value;
-            var y = document.getElementById("email"+studid).value;
-            var z = document.getElementById("supervisorChoiser").value;
-            var v = document.getElementById(document.getElementById("supervisorChoiser").value).innerText;
-            updatestudent(studid, x, y, z, v)
+        function Update(studentID){
+            var x = document.getElementById("name"+studentID).value;
+            var y = document.getElementById("email"+studentID).value;
+            var z = document.getElementById("supervisorChoiser" +studentID).value;
+            var v = document.getElementById(document.getElementById("supervisorChoiser" +studentID).value).innerText;
+            updatestudent(studentID, x, y, z, v)
         }
 
         function loadAddF(){
@@ -41,7 +41,7 @@
             students.append('Name: <input type="text" value="' +student.name+'" id=\"name' +student.id+'"/>' );
             students.append('Email: <input type="text" value="' +student.email+'" id=\"email' + student.id + '"/> ');
             students.append('Current Supervisor: ' +  student.supervisor.name +' | ');
-            students.append('Choose Supervisor:  <select id="supervisorChoiser"> <option id="1" value="1">Supervisor Julius</option> <option id="2" value="2">Supervisor Jon  </option><option id="3" value="3">Supervisor Claus</option></select>' );
+            students.append('Choose Supervisor: <select id="supervisorChoiser' +student.id+'" > <option id="1" value="1">Supervisor Julius</option> <option id="2" value="2">Supervisor Jon</option> <option id="3" value="3">Supervisor Claus</option></select>'  );
             students.append('<input type="button" value="Update" onclick="Update(\'' + student.id + '\')"/></tr>');
             students.append('<input type="button" value="Delete" onclick="deletestudent(\'' + student.id + '\')"/></tr>');
         }
